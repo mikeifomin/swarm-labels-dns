@@ -5,18 +5,23 @@ import (
 	"./docker"
 	"fmt"
 	"github.com/joho/godotenv"
+	"time"
 )
 
 func main() {
-	fmt.Println("dsds")
-	godotenv.Load()
-	d := docker.NewFromEnv()
-	do := digitalocean.NewFromEnv()
-	nodesAddrs := d.FetchNodesAddrs()
-	dnsAddrs := do.FetchDnsAddrs()
+	for {
+		fmt.Println("check")
+		godotenv.Load()
+		d := docker.NewFromEnv()
+		do := digitalocean.NewFromEnv()
+		nodesAddrs := d.FetchNodesAddrs()
+		dnsAddrs := do.FetchDnsAddrs()
 
-	for addr, nodeID := range nodesAddrs {
-		domains := dnsAddrs[addr]
-		d.UpdateNodeLabels(nodeID, domains)
+		for addr, nodeID := range nodesAddrs {
+			domains := dnsAddrs[addr]
+			fmt.Println(domains)
+			d.UpdateNodeLabels(nodeID, domains)
+		}
+		time.Sleep(60 * time.Second)
 	}
 }
